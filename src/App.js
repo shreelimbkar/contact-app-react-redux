@@ -35,7 +35,15 @@ class App extends Component {
       <div>
         <h1>Clientside Contact Application</h1>
         <hr/>
-
+        {
+          <ul>
+            {
+              this.props.contacts.map((contact, i) => {
+                <li key={i}>{contact.name}</li>
+              })
+            }
+          </ul>
+        }
         <div>
           <h3>Add Contact Form</h3>
           <form onSubmit={this.handleSubmit}>
