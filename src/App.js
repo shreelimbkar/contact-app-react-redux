@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as contactAction from './actions/contactAction';
-import './App.css';
 
 class App extends Component {
 
@@ -22,36 +21,54 @@ class App extends Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    console.log(this.state.name);
+    // console.log(this.state.name);
     let contact = {
       name: this.state.name
     }
+    this.setState({
+      name: ''
+    });
     this.props.createContact(contact);
   }
 
-  render() {
-    let name;
+  listView(data, index){
     return (
-      <div>
+      <div className="row" key={index}>
+        <div className="col-md-10">
+          <li key={index} className="list-group-item clearfix">
+            {data.name}
+          </li>
+        </div>
+        <div className="col-md-2">
+          <button onClick={(e) => this.deleteContact(e, index)} className="btn btn-danger">
+            Remove
+          </button>
+        </div>
+    </div> 
+    )
+  }
+
+  deleteContact(e, index) {
+    e.preventDefault();
+    this.props.deleteContact(index);
+  }
+
+  render() {
+    return (
+      <div className="container">
         <h1>Clientside Contact Application</h1>
         <hr/>
-        {
-          <ul>
-            {
-              this.props.contacts.map((contact, i) => {
-                <li key={i}>{contact.name}</li>
-              })
-            }
-          </ul>
-        }
         <div>
           <h3>Add Contact Form</h3>
           <form onSubmit={this.handleSubmit}>
-            <input type="text" onChange={this.handleChange} />
-            <input type="Submit" />
+            <input type="text" onChange={this.handleChange} className="form-control" value={this.state.name} /><br/>
+            <input type="submit" className="btn btn-success" value="ADD" disabled={!(this.state.name.length > 0)}/>
           </form>
+          <hr/>
+          { <ul className="list-group">
+          {this.props.contacts.map((contact, i) => this.listView(contact, i))}
+        </ul> }
         </div>
-
       </div>
     );
   }
@@ -65,7 +82,8 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    createContact: contact => dispatch(contactAction.createContact(contact))
+    createContact: contact => dispatch(contactAction.createContact(contact)),
+    deleteContact: index => dispatch(contactAction.deleteContact(index))
   }
 }
 

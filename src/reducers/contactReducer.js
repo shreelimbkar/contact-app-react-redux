@@ -7,6 +7,8 @@ export default (state = [], action) => {
                 ...state,
                 Object.assign({}, action.contact)
             ]
+        case actionTypes.REMOVE_CONTACT:
+            return state.filter((data, i) => i !== action.id);
         default:
             return state;
     }
